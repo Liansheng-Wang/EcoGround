@@ -1,24 +1,33 @@
 #!/usr/bin/env python3
+
 import time
 import serial
+import rospy
+from geometry_msgs.msg import Point
 
-serial_port = '/dev/ttyUSB0'
+
 baud_rate = 57600
-
+serial_port = '/dev/ttyUSB1'
 cuavp9_ser = serial.Serial(serial_port, baud_rate, timeout=1)
 
-# 设置参数
-send_data = 'AT&F7\n' + 'ATS102=2\n' + 'ATS103=4\n' + 'ATS104=1234567890\n' + \
-            'ATS108=30\n' + 'ATS105=1\n' + 'ATS140=65535\n' + 'AT&V\n' + 'AT&W\n'
-print(send_data)
 
-# 发送参数
-cuavp9_ser.write(send_data.encode('ascii'))
+ugv_msg: Point
+def ugv_callback(msg):
+    Point = msg
+    p9_msg = str(Point.x)  + "," + str(Point.y) + ","+ str(Point.z)+"\n"
+    cuavp9_ser.write(p9_msg)
 
-# 等待回复
-while True:
-    buffer = cuavp9_ser.read(1024)
-    if b'OK' in buffer:
-        print(buffer.decode('ascii'))
-        break
-    time.sleep(0.05)
+
+rospy.init_node('p9_ground_node', anonymous=True)
+sub_ugv_pose = rospy.Subscriber('/ugv/pose', Point, ugv_callback)
+
+# 本地测试代码
+# rosrate = rospy.Rate(20)
+# while not rospy.is_shutdown():
+#     p9_msg = str(3.1415926)  + "," + str(1.41421356) + ","+ str(2.71828)+"\n"
+#     n = cuavp9_ser.write(p9_msg.encode('utf-8'))
+#     if n != len(p9_msg):
+#         print("Failed to send data!")
+#     rosrate.sleep()
+
+rospy.spin()

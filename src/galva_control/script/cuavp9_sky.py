@@ -1,20 +1,27 @@
 #! /usr/bin/env python3
 
 import serial
-import time
+import rospy
+from geometry_msgs.msg import Point
 
-serial_port = '/dev/ttyUSB1'
-baud_rate = 9600
+baud_rate = 57600
+serial_port = '/dev/ttyUSB0'
+
+
+
+rospy.init_node('p9_sky_node', anonymous=True)
+pub_ugv_pose = rospy.Publisher('/ugv/pose', Point, queue_size=1)
+rosrate = rospy.Rate(20)
+
 
 cuavp9_ser = serial.Serial(serial_port, baud_rate, timeout=1)
 
-send_data = 'AT&F8\n' + 'ATS102=2\n' + 'ATS103=4\n' + 'ATS104=1234567890\n' + \
-            'ATS108=30\n' + 'ATS105=2\n' + 'ATS140=1\n' + 'AT&V\n' + 'AT&W\n'
-print(send_data)
-
-# cuavp9_ser.write(send_data.encode())
-
-while True:
-    buffer = cuavp9_ser.read(1024)
-    print(buffer)
-    time.sleep(0.05)
+while not rospy.is_shutdown():
+    buffer = cuavp9_ser.readline().decode().rstrip()
+    data_list = buffer.split(',')
+    point_msg = Point()
+    point_msg.x = float (data_list[0])
+    point_msg.y = float (data_list[1])
+    point_msg.z = float (data_list[2])
+    pub_ugv_pose.publish(point_msg)
+    rosrate.sleep()
