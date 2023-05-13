@@ -15,7 +15,7 @@ ugv_msg: Point
 def ugv_callback(msg):
     Point = msg
     p9_msg = str(Point.x)  + "," + str(Point.y) + ","+ str(Point.z)+"\n"
-    cuavp9_ser.write(p9_msg)
+    cuavp9_ser.write(p9_msg.encode('utf-8'))
 
 
 rospy.init_node('p9_ground_node', anonymous=True)

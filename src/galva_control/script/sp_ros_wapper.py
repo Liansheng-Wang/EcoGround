@@ -25,18 +25,18 @@ slide_platform_down.enable_motor()
 execute_thread1.start()
 
 
-pub_uav_pose = rospy.Publisher('/uav/pose', Point, queue_size=1)
-client3 = MyModbusClient(3, serial_port3, 1, direction = -1, kp=1.5)
-client4 = MyModbusClient(4, serial_port4, 1)
-slide_platform_up   = SlidePlatform(client3, client4)
-execute_thread2 = threading.Thread(target=slide_platform_up.circle, args=(1,30))
-slide_platform_up.enable_motor()
-execute_thread2.start()
+# pub_uav_pose = rospy.Publisher('/uav/pose', Point, queue_size=1)
+# client3 = MyModbusClient(3, serial_port3, 1, direction = -1, kp=1.5)
+# client4 = MyModbusClient(4, serial_port4, 1)
+# slide_platform_up   = SlidePlatform(client3, client4)
+# execute_thread2 = threading.Thread(target=slide_platform_up.circle, args=(1,30))
+# slide_platform_up.enable_motor()
+# execute_thread2.start()
 
 
 # while execute_thread1.is_alive() or execute_thread2.is_alive():
 while execute_thread1.is_alive():
-    ugv_position = slide_platform_up.get_position()
+    ugv_position = slide_platform_down.get_position()
     ugv_point = Point(ugv_position[0]+0.25, ugv_position[1]-0.55, 0)
     pub_ugv_pose.publish(ugv_point)
     rate.sleep()
@@ -48,4 +48,4 @@ while execute_thread1.is_alive():
     # rate.sleep()
     
 slide_platform_down.disable_motor()
-slide_platform_up.disable_motor()
+# slide_platform_up.disable_motor()
