@@ -66,7 +66,7 @@ class MyModbusClient:
 
     def __del__(self):
         self.flag_target_change = True
-        # self.disable_motor()
+        self.disable_motor()
 
     # 测试通过
     def enable_motor(self):
@@ -81,10 +81,10 @@ class MyModbusClient:
     def disable_motor(self):
         # 向使能寄存器写入 0，使电机不使能
         result = self.client.write_register(address=98, value=0, unit=self.slave_address)
-        if not result.isError():
-            print(cama.Fore.GREEN + '电机：' + str(self.id) + ', 已停止使能')
-        else:
+        if result.isError():
             print(cama.Fore.RED + '电机：'+ str(self.id) + ', 停止使能失败')
+        # else:
+            # print(cama.Fore.GREEN + '电机：' + str(self.id) + ', 已停止使能')
 
     # 测试通过
     def set_vel(self, vel: float):

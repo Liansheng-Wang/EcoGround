@@ -21,6 +21,8 @@ def ugv_callback(msg):
 rospy.init_node('p9_ground_node', anonymous=True)
 sub_ugv_pose = rospy.Subscriber('/ugv/pose', Point, ugv_callback)
 
+
+
 # 本地测试代码
 # rosrate = rospy.Rate(20)
 # while not rospy.is_shutdown():
@@ -29,5 +31,7 @@ sub_ugv_pose = rospy.Subscriber('/ugv/pose', Point, ugv_callback)
 #     if n != len(p9_msg):
 #         print("Failed to send data!")
 #     rosrate.sleep()
+
+
 
 rospy.spin()
