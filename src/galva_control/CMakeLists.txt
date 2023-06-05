@@ -24,3 +24,6 @@ include_directories(
 
 add_executable(lightcontrol src/LightControlNode.cpp)
 target_link_libraries(lightcontrol ${catkin_LIBRARIES} )
+
+add_executable(cuavp9_sky src/cuavp9_sky.cpp)
+target_link_libraries(cuavp9_sky ${catkin_LIBRARIES} )
